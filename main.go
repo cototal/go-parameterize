@@ -9,6 +9,12 @@ func ToPasCamelCase(str string, camel bool) string {
 	parts := strings.Split(parameterized, "-")
 	runeList := make([]rune, 0, len(parameterized))
 	for idx, part := range parts {
+		// ID seems to generally be treated differently by convention
+		if part == "id" {
+			runeList = append(runeList, 'I')
+			runeList = append(runeList, 'D')
+			continue
+		}
 		for jdx, run := range part {
 			if camel && idx == 0 {
 				runeList = append(runeList, run)
