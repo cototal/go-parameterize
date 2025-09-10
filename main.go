@@ -31,6 +31,37 @@ func ToPasCamelCase(str string, camel bool) string {
 
 }
 
+func IsCapitalRune(run rune) bool {
+	return run >= 'A' && run <= 'Z'
+}
+
+func FromPasCamelCase(str string, seprune rune) string {
+	tokens := make([]rune, 0, len(str))
+	if strings.ToLower(str) == "id" {
+		return "id"
+	}
+	for idx, run := range str {
+		if idx == 0 && IsCapitalRune(run) {
+			tokens = append(tokens, run+32)
+			continue
+		}
+		if IsCapitalRune(run) {
+			if run == 'I' && str[idx+1] == 'D' && idx == len(str)-2 {
+				tokens = append(tokens, seprune)
+				tokens = append(tokens, 'i')
+				tokens = append(tokens, 'd')
+				break
+			}
+			tokens = append(tokens, seprune)
+			tokens = append(tokens, run+32)
+			continue
+		}
+		tokens = append(tokens, run)
+	}
+
+	return string(tokens)
+}
+
 func ToPascalCase(str string) string {
 	return ToPasCamelCase(str, false)
 }
@@ -71,6 +102,10 @@ func Parameterize(str string, seprune rune) string {
 			continue
 		}
 		tokens = append(tokens, seprune)
+	}
+	// This for loop uses the conditional to continuously check until 'tokens' doesn't end with a seprune
+	for len(tokens) > 0 && tokens[len(tokens)-1] == seprune {
+		tokens = tokens[:len(tokens)-1]
 	}
 
 	return string(tokens)
