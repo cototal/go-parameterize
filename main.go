@@ -4,6 +4,33 @@ import (
 	"strings"
 )
 
+// Allows specification of case to case. Defaults to kebab
+func P8ize(str string, from string, to string) string {
+	var parameterized string
+	switch from {
+	case "pascal":
+		parameterized = FromPasCamelCase(str, '-')
+	case "camel":
+		parameterized = FromPasCamelCase(str, '-')
+	case "snake":
+		parameterized = Parameterize(str, '_')
+	default:
+		parameterized = Parameterize(str, '-')
+	}
+
+	switch to {
+	case "pascal":
+		return ToPascalCase(parameterized)
+	case "camel":
+		return ToCamelCase(parameterized)
+	case "snake":
+		return ToSnakeCase(parameterized)
+	default:
+		return ToKebabCase(parameterized)
+	}
+}
+
+// Converts a string to PascalCase or camelCase
 func ToPasCamelCase(str string, camel bool) string {
 	parameterized := Parameterize(str, '-')
 	parts := strings.Split(parameterized, "-")
@@ -78,6 +105,8 @@ func ToSnakeCase(str string) string {
 	return Parameterize(str, '_')
 }
 
+// Removes special characters and separates each part of a string with seprune
+// NOTE: Use FromPasCamelCase on strings that are already PascalCase or camelCase
 func Parameterize(str string, seprune rune) string {
 	tokens := make([]rune, 0, len(str))
 	for idx, run := range str {
